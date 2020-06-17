@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import country from '../json/countries.json';
+
 let path = "php/";
 let caseNumArr = [];
 let cityArr = [];
@@ -318,18 +321,19 @@ function nConVList() {
     type: "GET",
     success: function (data) {
       // console.log(data);
-      parseJSON = $.parseJSON(data);
+      const parseJSON = $.parseJSON(data);
       // console.log(parseJSON);
       parseJSON.forEach((v, i) => {
         // console.log(v);
-        caseMonth = v.診斷月份;
-        caseCity = v.縣市;
-        caseSex = v.性別;
-        isOutCase = v.是否為境外移入;
-        caseAge = v.年齡層;
-        caseNum = v.確定病例數;
+        let caseSex = v.性別;
+        let isOutCase = v.是否為境外移入;
+        let isOutCaseIcon;
+        const caseMonth = v.診斷月份;
+        const caseCity = v.縣市;
+        const caseAge = v.年齡層;
+        const caseNum = v.確定病例數;
         // console.log(isOutCase);
-        caseNumInt = parseInt(caseNum, 10);
+        const caseNumInt = parseInt(caseNum, 10);
         caseNumArr.push(caseNumInt);
         cityArr.push(caseCity);
         if (caseSex === "F") {
@@ -342,8 +346,9 @@ function nConVList() {
         } else {
           isOutCaseIcon = '<i class="fas fa-times text-danger"></i>';
         }
-        caseCityCode = findCityCode(caseCity).cityCode;
-        caseCityName = findCityCode(caseCity).cityName;
+        //TODO: rewrite findCityCode
+        const caseCityCode = 555;
+        const caseCityName = caseCity;
         // console.log(caseCityName);
         // console.log(caseNumInt);
         // console.log(caseCityCode);
@@ -538,5 +543,8 @@ function findCityCode(arrV) {
   return cityObj;
 }
 
+// comment for testing
+//render();
 
-render();
+// for software tesing hw3
+export { nConVList, findCityCode };
