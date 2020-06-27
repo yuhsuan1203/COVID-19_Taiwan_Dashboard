@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import twCityCode from '../json/taiwan-city-code.json';
+import axios from 'axios';
 
 let path = "php/";
 let caseNumArr = [];
@@ -7,47 +8,31 @@ let cityArr = [];
 let arrayCode = [];
 let cityCaseArr = [];
 
-function getTWData() {
-  return new Promise(function (resolve, reject) {
-    $.ajax({
-      url: path + "api-TWData.php",
-      type: "GET",
-      success: function (data) {
-        parseJSON = $.parseJSON(data);
-        // console.log(parseJSON[0]);
-        diagnoseNum = parseJSON[0].確診;
-        releaseNum = parseJSON[0].解除隔離;
-        deadNum = parseJSON[0].死亡;
-        inspectNum = parseJSON[0].送驗;
-        excludeNum = parseJSON[0]['排除(新)'];
-        ysdDiagnoseNum = parseJSON[0].昨日確診;
-        ysdInspectionNum = parseJSON[0].昨日送驗;
-        ysdExcludeNum = parseJSON[0]['昨日排除(新)'];
-        // console.log(
-        //   diagnoseNum, releaseNum, deadNum, inspectNum, excludeNum, ysdDiagnoseNum, ysdInspectionNum, ysdExcludeNum
-        // );
+async function getTWData() {
+  const url = path + "api-TWData.php";
 
-      },
-      error: function (data) {
-        console.log(data);
-      },
-      complete: function (data) {
-        // console.log(data);
-        TWObjData = {
-          "diagnoseNum": diagnoseNum,
-          "releaseNum": releaseNum,
-          "deadNum": deadNum,
-          "inspectNum": inspectNum,
-          "excludeNum": excludeNum,
-          "ysdDiagnoseNum": ysdDiagnoseNum,
-          "ysdInspectionNum": ysdInspectionNum,
-          "ysdExcludeNum": ysdExcludeNum
-        }
-        renderData(TWObjData);
-      }
-    });
-    resolve();
-  });
+  //TODO: check if axios return JSON object automatically
+  const data = await axios.get(url);
+
+  const diagnoseNum = data[0].確診;
+  const releaseNum = data[0].解除隔離;
+  const deadNum = data[0].死亡;
+  const inspectNum = data[0].送驗;
+  const excludeNum = data[0]['排除(新)'];
+  const ysdDiagnoseNum = data[0].昨日確診;
+  const ysdInspectionNum = data[0].昨日送驗;
+  const ysdExcludeNum = data[0].昨日排除;
+
+  return {
+    diagnoseNum,
+    releaseNum,
+    deadNum,
+    inspectNum,
+    excludeNum,
+    ysdDiagnoseNum,
+    ysdInspectionNum,
+    ysdExcludeNum
+  };
 }
 
 function renderData(TWObjData) {
@@ -269,17 +254,11 @@ function ysdExclude() {
 //   return decodeStr;
 // }
 
-function render() {
-  getTWData()
-    // .then(dead)
-    // .then(ysdDiagnose)
-    // .then(release)
-    // .then(inspect)
-    // .then(exclude)
-    // .then(ysdInspection)
-    // .then(ysdExclude)
-    .then(nConVList);
-
+async function render() {
+  const TWObjData = await getTWData();
+  renderData(TWObjData);
+  
+  nConVList();
 }
 
 function getNumAndTitle(data) {
@@ -531,4 +510,8 @@ function findCityCode(queryCityName) {
 //render();
 
 // for software tesing hw3
-export { nConVList, findCityCode };
+export { 
+  nConVList, 
+  findCityCode,
+  getTWData
+};

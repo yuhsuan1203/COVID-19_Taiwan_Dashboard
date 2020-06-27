@@ -1,6 +1,45 @@
-import { nConVList, findCityCode} from '../index';
+import { 
+  nConVList, 
+  findCityCode,
+  getTWData
+} from '../index';
 
 import $ from 'jquery';
+import axios from 'axios';
+
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+
+describe('test `getTWData`', () => {
+  it('should return TWObjData', async () => {
+    axios.get = jest
+      .fn()
+      .mockResolvedValue({
+        "0": {
+          確診: 447,
+          解除隔離: 435,
+          死亡: 7,
+          送驗: "76,209",
+          "排除(新)": "75,264",
+          昨日確診: 0,
+          昨日排除: 147,
+          昨日送驗: 177,
+        },
+      });
+
+    const TWObjData = await getTWData();
+    expect(TWObjData).toMatchObject({
+      diagnoseNum: expect.any(Number),
+      releaseNum: expect.any(Number),
+      deadNum: expect.any(Number),
+      inspectNum: expect.any(String),
+      excludeNum: expect.any(String),
+      ysdDiagnoseNum: expect.any(Number),
+      ysdInspectionNum: expect.any(Number),
+      ysdExcludeNum: expect.any(Number)
+    })
+  })
+})
 
 describe('test `findCityCode`', () => {
   it('should return city object', () => {
