@@ -1,8 +1,8 @@
 {
-  "name": "js",
+  "name": "dashboard",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "js/index.js",
   "scripts": {
     "test": "jest --watchAll --verbose false"
   },
@@ -17,6 +17,7 @@
   "devDependencies": {
     "@babel/core": "^7.10.2",
     "@babel/preset-env": "^7.10.2",
+    "@types/jest": "^26.0.3",
     "babel-jest": "^26.0.1",
     "jest": "^26.0.1",
     "json5-loader": "^4.0.0",
