@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import country from '../json/countries.json';
+import twCityCode from '../json/taiwan-city-code.json';
 
 let path = "php/";
 let caseNumArr = [];
@@ -346,12 +346,12 @@ function nConVList() {
         } else {
           isOutCaseIcon = '<i class="fas fa-times text-danger"></i>';
         }
-        //TODO: rewrite findCityCode
-        const caseCityCode = 555;
-        const caseCityName = caseCity;
-        // console.log(caseCityName);
-        // console.log(caseNumInt);
-        // console.log(caseCityCode);
+        const caseCityObj = findCityCode(caseCity);
+        const {
+          cityCode: caseCityCode,
+          cityName: caseCityName
+        } = caseCityObj;
+        
         let cityCaseObj = {
           'caseCityCode': caseCityCode,
           'caseCityName': '' + caseCityName + '',
@@ -516,32 +516,16 @@ function sortCity(cityArr) {
   return arrayCode;
 }
 
-function findCityCode(arrV) {
-  $.ajax({
-    url: "json/taiwan-city-code.json",
-    type: "GET",
-    async: false,
-    success: function (data) {
-      // console.log(data);
-      cityCode = data.cityCode;
-      cityName = data.cityName;
-      for (let i in data) {
-        jsonCity = data[i].cityName;
-        if (arrV === jsonCity) {
-          // console.log(jsonCity);
-          code = parseInt(i, 10);
-          cityObj = {
-            'cityCode': code + 1,
-            'cityName': '' + jsonCity + ''
-          };
-          // console.log(cityObj);
-          return cityObj;
-        }
-      }
+function findCityCode(queryCityName) {
+  for (const city of twCityCode) {
+    const cityName = city.cityName;
+    if (queryCityName === cityName) {
+      return city;
     }
-  });
-  return cityObj;
+  }
+  return undefined;
 }
+
 
 // comment for testing
 //render();

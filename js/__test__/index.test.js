@@ -1,6 +1,17 @@
-import { nConVList, findCityCode } from '../index';
+import { nConVList, findCityCode} from '../index';
 
 import $ from 'jquery';
+
+describe('test `findCityCode`', () => {
+  it('should return city object', () => {
+    const expectObj = {
+      'cityCode': 2,
+      'cityName': '台北市'
+    };
+
+    expect(findCityCode('台北市')).toEqual(expectObj);
+  });
+});
 
 describe('logic coverage in `nConVList`, include PC, CC, CACC', () => {
   let path;
