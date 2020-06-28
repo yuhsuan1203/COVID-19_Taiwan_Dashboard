@@ -1,7 +1,8 @@
 import { 
   nConVList, 
   findCityCode,
-  getTWData
+  getTWData,
+  renderData
 } from '../index';
 
 import $ from 'jquery';
@@ -9,6 +10,50 @@ import axios from 'axios';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+
+describe('test `renderData`', () => {
+  it('should render corresponding html', () =>{
+    const TWObjTest = {
+      diagnoseNum: 447,
+      releaseNum: 435,
+      deadNum: 7,
+      inspectNum: "76,209",
+      excludeNum: "75,264",
+      ysdDiagnoseNum: 0,
+      ysdInspectionNum: 147,
+      ysdExcludeNum: 177
+    };
+    document.body.innerHTML = 
+    '<div id="ysdExcludeNum"></div>' +
+    '<div id="ysdInspectionNum"></div>' +
+    '<div id="excludeNum"></div>' +
+    '<div id="inspectNum"></div>' +
+    '<div id="releaseNum"></div>' +
+    '<div id="ysdDiagnoseNum"></div>' +
+    '<div id="deadNum"></div>' +
+    '<div id="diagnoseNum"></div>';
+
+    //test `renderData`
+    renderData(TWObjTest);
+    expect(document.querySelector('#ysdExcludeNum').textContent)
+      .toBe(TWObjTest.ysdExcludeNum.toString());
+    expect(document.querySelector('#ysdInspectionNum').textContent)
+      .toBe(TWObjTest.ysdInspectionNum.toString());
+    expect(document.querySelector('#excludeNum').textContent)
+      .toBe(TWObjTest.excludeNum);
+    expect(document.querySelector('#inspectNum').textContent)
+      .toBe(TWObjTest.inspectNum);
+    expect(document.querySelector('#releaseNum').textContent)
+      .toBe(TWObjTest.releaseNum.toString());
+    expect(document.querySelector('#ysdDiagnoseNum').textContent)
+      .toBe(TWObjTest.ysdDiagnoseNum.toString());
+    expect(document.querySelector('#deadNum').textContent)
+      .toBe(TWObjTest.deadNum.toString());
+    expect(document.querySelector('#diagnoseNum').textContent)
+      .toBe(TWObjTest.diagnoseNum.toString());
+
+  });
+});
 
 describe('test `getTWData`', () => {
   it('should return TWObjData', async () => {
@@ -53,20 +98,6 @@ describe('test `findCityCode`', () => {
 });
 
 describe('logic coverage in `nConVList`, include PC, CC, CACC', () => {
-  let path;
-  let caseNumArr;
-  let cityArr;
-  let arrayCode;
-  let cityCaseArr;
-
-  beforeEach(() => {
-    path = "php/";
-    caseNumArr = [];
-    cityArr = [];
-    arrayCode = [];
-    cityCaseArr = [];
-  });
-
   it('sex === "F"(T), isOutCase == "是"(T)', () => {
     $.ajax = jest.fn().mockReturnValue(undefined);
 

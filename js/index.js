@@ -2,6 +2,9 @@ import $ from 'jquery';
 import twCityCode from '../json/taiwan-city-code.json';
 import axios from 'axios';
 
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
+
 let path = "php/";
 let caseNumArr = [];
 let cityArr = [];
@@ -36,29 +39,25 @@ async function getTWData() {
 }
 
 function renderData(TWObjData) {
-  // $("#ysdExcludeTitle").html(returnData.Title + ' <i class="fas fa-child"></i>');
-  $("#ysdExcludeNum").html(TWObjData.ysdExcludeNum);
+  const {
+    diagnoseNum,
+    releaseNum,
+    deadNum,
+    inspectNum,
+    excludeNum,
+    ysdDiagnoseNum,
+    ysdInspectionNum,
+    ysdExcludeNum
+  } = TWObjData;
 
-  // $("#ysdInspectionTitle").html(returnData.Title + ' <i class="fas fa-ambulance fa-sm"></i>');
-  $("#ysdInspectionNum").html(ysdInspectionNum);
-
-  // $("#excludeTitle").html(returnData.Title + ' <i class="fas fa-child"></i>');
-  $("#excludeNum").html(TWObjData.excludeNum);
-
-  // $("#inspectTitle").html(returnData.Title + ' <i class="fas fa-ambulance fa-sm"></i>');
-  $("#inspectNum").html(TWObjData.inspectNum);
-
-  //  $("#releaseTitle").html(returnData.Title + ' <i class="fas fa-smile"></i>')
-  $("#releaseNum").html(TWObjData.releaseNum);
-
-  //  $("#ysdDiagnoseTitle").html('昨日' + returnData.Title + ' <i class="fas fa-syringe"></i>');
-  $("#ysdDiagnoseNum").html(TWObjData.ysdDiagnoseNum);
-
-  //  $("#deadTitle").html(returnData.Title + ' <i class="fas fa-skull-crossbones"></i>');
-  $("#deadNum").html(TWObjData.deadNum);
-
-  //  $("#diagnoseTitle").html('總' + returnData.Title + ' <i class="far fa-hospital"></i>');
-  $("#diagnoseNum").html(TWObjData.diagnoseNum);
+  document.querySelector("#ysdExcludeNum").textContent = ysdExcludeNum;
+  document.querySelector("#ysdInspectionNum").textContent = ysdInspectionNum;
+  document.querySelector("#excludeNum").textContent = excludeNum;
+  document.querySelector("#inspectNum").textContent = inspectNum;
+  document.querySelector("#releaseNum").textContent = releaseNum;
+  document.querySelector("#ysdDiagnoseNum").textContent = ysdDiagnoseNum;
+  document.querySelector("#deadNum").textContent = deadNum;
+  document.querySelector("#diagnoseNum").textContent = diagnoseNum;
 }
 
 async function render() {
@@ -254,5 +253,6 @@ render();
 export { 
   nConVList, 
   findCityCode,
-  getTWData
+  getTWData,
+  renderData
 };
