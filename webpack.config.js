@@ -13,6 +13,10 @@ module.exports = {
         test: /\.json$/,
         use: 'json5-loader',
         type: 'javascript/auto'
+      },
+      {
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"]
       }
     ]
   }

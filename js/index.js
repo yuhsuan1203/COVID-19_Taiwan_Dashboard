@@ -1,10 +1,13 @@
 import $ from 'jquery';
+import dt from'datatables.net';
+import 'datatables.net-dt/css/jquery.datatables.css';
 import twCityCode from '../json/taiwan-city-code.json';
 import axios from 'axios';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
+dt(window, $); // used for datatables
 let path = "php/";
 let caseNumArr = [];
 let cityArr = [];
@@ -67,74 +70,58 @@ async function render() {
   nConVList();
 }
 
-function nConVList() {
-  $.ajax({
-    url: path + "api-nConVList.php",
-    type: "GET",
-    success: function (data) {
-      // console.log(data);
-      const parseJSON = $.parseJSON(data);
-      // console.log(parseJSON);
-      parseJSON.forEach((v, i) => {
-        // console.log(v);
-        let caseSex = v.性別;
-        let isOutCase = v.是否為境外移入;
-        let isOutCaseIcon;
-        const caseMonth = v.診斷月份;
-        const caseCity = v.縣市;
-        const caseAge = v.年齡層;
-        const caseNum = v.確定病例數;
-        // console.log(isOutCase);
-        const caseNumInt = parseInt(caseNum, 10);
-        caseNumArr.push(caseNumInt);
-        cityArr.push(caseCity);
-        if (caseSex === "F") {
-          caseSex = "女";
-        } else {
-          caseSex = "男";
-        };
-        if (isOutCase == "是") {
-          isOutCaseIcon = '<i class="far fa-circle text-success"></i>';
-        } else {
-          isOutCaseIcon = '<i class="fas fa-times text-danger"></i>';
-        }
-        const caseCityObj = findCityCode(caseCity);
-        const {
-          cityCode: caseCityCode,
-          cityName: caseCityName
-        } = caseCityObj;
-        
-        let cityCaseObj = {
-          'caseCityCode': caseCityCode,
-          'caseCityName': '' + caseCityName + '',
-          'caseCityNum': caseNumInt
-        };
-        cityCaseArr.push(cityCaseObj);
+async function nConVList() {
+  const url = path + "api-nConVList.php";
 
-        $("#nConVList").append(
-          '<tr><td>' + caseMonth + '</td><td data-order="' + caseCityCode + '">' + caseCity +
-          '</td><td>' + caseSex + '</td><td>' +
-          caseAge + '</td><td>' + caseNum + '</td><td>' + isOutCaseIcon + '</td></tr>');
-      });
-      // parseJSON = $.parseJSON(data);
-    },
-    error: function (data) {
-      console.log(data);
-    },
-    complete: function () {
-      // console.log(cityCaseArr);
-      caseNumTotal = caseNumArr.reduce((a, b) => a + b);
-      // console.log(caseNumTotal);
-      cityCaseArr.sort((a, b) => {
-        return a.caseCityCode - b.caseCityCode;
-      });
-      countCityCase(cityCaseArr);
-      nCovDataTable();
-      renderSVGColor();
-      $(".loading").css({
-        "display": "none"
-      });
-    }
+  const data = await axios.get(url);
+
+  data.forEach((v, i) => {
+    // console.log(v);
+    const caseSex = v.性別;
+    const isOutCase = v.是否為境外移入;
+    const caseMonth = v.診斷月份;
+    const caseCity = v.縣市;
+    const caseAge = v.年齡層;
+    const caseNum = v.確定病例數;
+    
+    const caseCityNum = parseInt(caseNum, 10);
+    caseNumArr.push(caseCityNum);
+    cityArr.push(caseCity);
+
+    const caseDisplaySex = (caseSex === "F") ? "女" : "男";
+    
+    const iconClassName = 
+      (isOutCase == "是") ? "far fa-circle text-success" : "fas fa-times text-danger";
+    
+    const isOutCaseIcon = `<i class="${iconClassName}"></i>`
+    
+    const caseCityObj = findCityCode(caseCity);
+    const {
+      cityCode: caseCityCode,
+      cityName: caseCityName
+    } = caseCityObj;
+    
+    let cityCaseObj = {
+      caseCityCode,
+      caseCityName,
+      caseCityNum
+    };
+    cityCaseArr.push(cityCaseObj);
+
+    $("#nConVList").append(
+      '<tr><td>' + caseMonth + '</td><td data-order="' + caseCityCode + '">' + caseCity +
+      '</td><td>' + caseDisplaySex + '</td><td>' +
+      caseAge + '</td><td>' + caseNum + '</td><td>' + isOutCaseIcon + '</td></tr>');
+  });
+  // complete
+  cityCaseArr.sort((a, b) => {
+    return a.caseCityCode - b.caseCityCode;
+  });
+  countCityCase(cityCaseArr);
+  nCovDataTable();
+  renderSVGColor();
+  $(".loading").css({
+    "display": "none"
   });
 }
 
@@ -144,8 +131,8 @@ function rgbToHex(r, g, b) {
 
 function renderSVGColor() {
   for (let i = 1; i < 22; i++) {
-    cName = $("#TW_" + i + " > th").text();
-    cNum = parseInt($("#TW_" + i + " > td").text(), 10) * 5;
+    const cName = $("#TW_" + i + " > th").text();
+    const cNum = parseInt($("#TW_" + i + " > td").text(), 10) * 5;
     let r = 255;
     let g = 255 - cNum;
     let b = g;
@@ -155,7 +142,7 @@ function renderSVGColor() {
       b = g;
     }
 
-    hexColor = rgbToHex(r, g, b);
+    const hexColor = rgbToHex(r, g, b);
     // console.log(hexColor);
     $("#tw-map-" + i).css({
       "fill": hexColor,
@@ -168,22 +155,22 @@ function countCityCase(cityCaseArr) {
   let prevCityCode = 1;
   for (const i in cityCaseArr) {
 
-    currCityCode = cityCaseArr[i].caseCityCode;
+    const currCityCode = cityCaseArr[i].caseCityCode;
     // console.log(currCityCode);
     if (prevCityCode != currCityCode) {
       // console.log(currCityCode, prevCityCode);
       prevCityCode = currCityCode;
-      currCaseCityNum = cityCaseArr[i].caseCityNum;
+      const currCaseCityNum = cityCaseArr[i].caseCityNum;
       $("#TW_" + currCityCode + " > td").html("<span class='text-warning'>" + currCaseCityNum + "</span>");
     } else if (prevCityCode == currCityCode) {
       // console.log("pc:" + currCityCode, prevCityCode);
-      prevCaseCityNum = parseInt($("#TW_" + prevCityCode + " > td").text(), 10);
-      currCaseCityNum = parseInt(cityCaseArr[i].caseCityNum, 10);;
+      const prevCaseCityNum = parseInt($("#TW_" + prevCityCode + " > td").text(), 10);
+      const currCaseCityNum = parseInt(cityCaseArr[i].caseCityNum, 10);;
       NewCaseCityNum = prevCaseCityNum + currCaseCityNum;
       $("#TW_" + prevCityCode + " > td").html("<span class='text-warning'>" + NewCaseCityNum + "</span>");
     }
   }
-  TW_1_Num = parseInt($("#TW_1 > td").text(), 10) - 1;
+  const TW_1_Num = parseInt($("#TW_1 > td").text(), 10) - 1;
   $("#TW_1 > td").html("<span class='text-warning'>" + TW_1_Num + "</span>");
   // console.log(TW_1_Num);
 

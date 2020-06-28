@@ -4,11 +4,15 @@
   "description": "",
   "main": "js/index.js",
   "scripts": {
-    "test": "jest --watchAll --verbose false"
+    "test": "jest --watchAll"
   },
   "jest": {
+    "verbose": false,
     "transform": {
       "^.+\\.js?$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "\\.(css|less)$": "identity-obj-proxy"
     }
   },
   "keywords": [],
@@ -20,14 +24,19 @@
     "@types/jest": "^26.0.3",
     "babel-jest": "^26.0.1",
     "core-js": "^3.6.5",
+    "css-loader": "^3.6.0",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^26.0.1",
     "json5-loader": "^4.0.0",
     "regenerator-runtime": "^0.13.5",
+    "style-loader": "^1.2.1",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "datatables.net": "^1.10.21",
+    "datatables.net-dt": "^1.10.21",
     "jquery": "^3.5.1"
   }
 }

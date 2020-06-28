@@ -98,20 +98,16 @@ describe('test `findCityCode`', () => {
 });
 
 describe('logic coverage in `nConVList`, include PC, CC, CACC', () => {
-  it('sex === "F"(T), isOutCase == "是"(T)', () => {
-    $.ajax = jest.fn().mockReturnValue(undefined);
-
+  it('sex === "F"(T), isOutCase == "是"(T)', async () => {
+    axios.get = jest.fn().mockResolvedValue([{
+      "診斷月份": 3, "縣市": "高雄市", "性別": "F", 
+      "是否為境外移入": "是", "年齡層": "50-54", "確定病例數": 3 
+    }])
     // Set up our document body
     document.body.innerHTML = '<div id="nConVList"></div>';
     
-    nConVList();
-    // check if ajax has been called 
-    expect($.ajax).toHaveBeenCalledTimes(1);
-    let successFn = $.ajax.mock.calls[0][0].success;
-    successFn('[{\
-      "診斷月份": 3, "縣市": "高雄市", "性別": "F", \
-      "是否為境外移入": "是", "年齡層": "50-54", "確定病例數": 3 \
-    }]');
+    await nConVList();
+
     // check results
     expect($("#nConVList tr td:nth-child(3)").text()).toBe('女');
     expect($("#nConVList tr td:nth-child(6)").html())
@@ -119,20 +115,17 @@ describe('logic coverage in `nConVList`, include PC, CC, CACC', () => {
     //console.log($("#nConVList tr").html());
   });
 
-  it('sex === "F"(F), isOutCase == "是"(F)', () => {
-    $.ajax = jest.fn().mockReturnValue(undefined);
+  it('sex === "F"(F), isOutCase == "是"(F)', async () => {
+    axios.get = jest.fn().mockResolvedValue([{
+      "診斷月份": 4, "縣市": "新北市", "性別": "M", 
+      "是否為境外移入": "否", "年齡層": "35-39", "確定病例數": 1 
+    }])
 
     // Set up our document body
     document.body.innerHTML = '<div id="nConVList"></div>';
     
-    nConVList();
-    // check if ajax has been called 
-    expect($.ajax).toHaveBeenCalledTimes(1);
-    let successFn = $.ajax.mock.calls[0][0].success;
-    successFn('[{\
-      "診斷月份": 4, "縣市": "新北市", "性別": "M", \
-      "是否為境外移入": "否", "年齡層": "35-39", "確定病例數": 1 \
-    }]');
+    await nConVList();
+    
     // check results
     expect($("#nConVList tr td:nth-child(3)").text()).toBe('男');
     expect($("#nConVList tr td:nth-child(6)").html())
