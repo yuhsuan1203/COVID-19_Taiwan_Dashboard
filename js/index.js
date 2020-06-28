@@ -61,237 +61,11 @@ function renderData(TWObjData) {
   $("#diagnoseNum").html(TWObjData.diagnoseNum);
 }
 
-function diagnose() {
-  return new Promise(function (resolve, reject) {
-    $.ajax({
-      url: path + "api-diagnose.php",
-      type: "GET",
-      dataType: "html",
-      async: false,
-      success: function (data) {
-        returnData = getNumAndTitle(data);
-        // console.log(returnData);
-      },
-      error: function (data) {
-        console.log(data);
-
-      },
-      complete: function () {
-        // console.log(returnData);
-        $("#diagnoseTitle").html('總' + returnData.Title + ' <i class="far fa-hospital"></i>');
-        $("#diagnoseNum").html(returnData.CaseNum);
-        // return decodeStr;
-      }
-    });
-
-    resolve(returnData);
-  });
-}
-
-function dead() {
-  $.ajax({
-    url: path + "api-dead.php",
-    type: "GET",
-    dataType: "html",
-    async: false,
-    success: function (data) {
-      returnData = getNumAndTitle(data);
-    },
-    error: function (data) {
-      console.log(data);
-    },
-    complete: function () {
-      $("#deadTitle").html(returnData.Title + ' <i class="fas fa-skull-crossbones"></i>');
-      $("#deadNum").html(returnData.CaseNum);
-
-    }
-  });
-
-}
-
-function ysdDiagnose() {
-  $.ajax({
-    url: path + "api-ysdDiagnose.php",
-    type: "GET",
-    dataType: "html",
-    async: false,
-    success: function (data) {
-      returnData = getNumAndTitle(data);
-    },
-    error: function (data) {
-      console.log(data);
-    },
-    complete: function () {
-      $("#ysdDiagnoseTitle").html('昨日' + returnData.Title + ' <i class="fas fa-syringe"></i>');
-      $("#ysdDiagnoseNum").html(returnData.CaseNum);
-
-    }
-  });
-
-}
-
-function release() {
-  $.ajax({
-    url: path + "api-release.php",
-    type: "GET",
-    dataType: "html",
-    async: false,
-    success: function (data) {
-      returnData = getNumAndTitle(data);
-    },
-    error: function (data) {
-      console.log(data);
-    },
-    complete: function () {
-      $("#releaseTitle").html(returnData.Title + ' <i class="fas fa-smile"></i>')
-      $("#releaseNum").html(returnData.CaseNum)
-
-    }
-  });
-
-}
-
-function inspect() {
-  $.ajax({
-    url: path + "api-inspect.php",
-    type: "GET",
-    dataType: "html",
-    async: false,
-    success: function (data) {
-      returnData = getNumAndTitle(data);
-    },
-    error: function (data) {
-      console.log(data);
-    },
-    complete: function () {
-      $("#inspectTitle").html(returnData.Title + ' <i class="fas fa-ambulance fa-sm"></i>');
-      $("#inspectNum").html(returnData.CaseNum);
-
-    }
-  });
-
-}
-
-function exclude() {
-  $.ajax({
-    url: path + "api-exclude.php",
-    type: "GET",
-    dataType: "html",
-    async: false,
-    success: function (data) {
-      returnData = getNumAndTitle(data);
-    },
-    error: function (data) {
-      console.log(data);
-    },
-    complete: function () {
-      $("#excludeTitle").html(returnData.Title + ' <i class="fas fa-child"></i>');
-      $("#excludeNum").html(returnData.CaseNum);
-
-    }
-  });
-
-}
-
-function ysdInspection() {
-  $.ajax({
-    url: path + "api-ysdInspection.php",
-    type: "GET",
-    dataType: "html",
-    async: false,
-    success: function (data) {
-      returnData = getNumAndTitle(data);
-    },
-    error: function (data) {
-      console.log(data);
-    },
-    complete: function () {
-      $("#ysdInspectionTitle").html(returnData.Title + ' <i class="fas fa-ambulance fa-sm"></i>');
-      $("#ysdInspectionNum").html(returnData.CaseNum);
-
-    }
-  });
-
-}
-
-function ysdExclude() {
-  $.ajax({
-    url: path + "api-ysdExclude.php",
-    type: "GET",
-    dataType: "html",
-    async: false,
-    success: function (data) {
-      returnData = getNumAndTitle(data);
-    },
-    error: function (data) {
-      console.log(data);
-    },
-    complete: function () {
-      $("#ysdExcludeTitle").html(returnData.Title + ' <i class="fas fa-child"></i>');
-      $("#ysdExcludeNum").html(returnData.CaseNum);
-    }
-  });
-}
-
-// function notice() {
-//   $.ajax({
-//     url: path + "api-notice.php",
-//     type: "GET",
-//     dataType: "html",
-//     async: false,
-//     success: function (data) {
-//       returnData = getNumAndTitle(data);
-//     },
-//     error: function (data) {
-//       console.log(data);
-//     },
-//     complete: function (data) {
-//       // console.log(data);
-//       console.log(decodeStr);
-//       return decodeStr;
-//     }
-//   });
-//   return decodeStr;
-// }
-
 async function render() {
   const TWObjData = await getTWData();
   renderData(TWObjData);
   
   nConVList();
-}
-
-function getNumAndTitle(data) {
-  try {
-    scriptParse = $(data).filter('script')[1];
-    strSrc = $(scriptParse).html().toString();
-    var rex = /(\\x7b\\x22view).*(\\x7d\\x7d)/gmi;
-    matchStr = strSrc.match(rex)[0];
-    decodeStr = JSON.parse(decode(matchStr));
-    CaseNum = decodeStr.dataTable.rows[0].c[0].f;
-    Title = decodeStr.options.title;
-
-    returnData = {
-      "CaseNum": CaseNum,
-      "Title": Title
-    };
-  } catch (e) {
-    // console.log(e);
-    returnData = {
-      "CaseNum": "error",
-      "Title": "error"
-    }
-  }
-
-  return returnData;
-}
-
-function decode(str) {
-  try {
-    return !/([^\\]'|\r|\n)/.test(str) ? eval("'" + str + "'") : false;
-  } catch (e) {
-    return false;
-  }
 }
 
 function nConVList() {
@@ -416,22 +190,6 @@ function countCityCase(cityCaseArr) {
 
 }
 
-// $("#tw-city-list tr").hover(function () {
-//   // console.log($(this).find("td").attr("id"));
-//   cityID = $(this).find("td").attr("id").replace("TW_", "");
-//   // cityID.replace("TW_", "");
-//   // console.log(cityID);
-//   $("#tw-map-" + cityID).css({
-//     "fill": "#6DD0A6",
-//   });
-//   // cityID = $(this).attr("id");
-// }, function () {
-//   // console.log("end");
-//   $("#tw-map-" + cityID).css({
-//     "fill": "#fff",
-//   });
-// });
-
 function nCovDataTable() {
   $('#nCoVCaseTable').DataTable({
     "paging": true,
@@ -478,23 +236,6 @@ function nCovDataTable() {
   });
 }
 
-function sortCity(cityArr) {
-  cityArr.forEach((v, i) => {
-    // console.log(v);
-    arrV = v;
-    cityObj = findCityCode(arrV);
-    console.log(cityObj);
-    arrayCode.push(cityObj);
-  });
-
-  // console.log(arrayCode);
-  arrayCode.sort((a, b) => {
-    return a.cityCode - b.cityCode;
-  });
-  // console.log(arrayCode);
-  return arrayCode;
-}
-
 function findCityCode(queryCityName) {
   for (const city of twCityCode) {
     const cityName = city.cityName;
@@ -507,7 +248,7 @@ function findCityCode(queryCityName) {
 
 
 // comment for testing
-//render();
+render();
 
 // for software tesing hw3
 export { 
