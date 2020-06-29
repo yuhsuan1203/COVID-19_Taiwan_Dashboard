@@ -8,6 +8,12 @@ import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
 dt(window, $); // used for datatables
+/**
+ * Arr: array
+ * caseNumArr: contain all the case number in the nCovList, sum it up will get 
+ *   total case number.
+ * 
+ */
 let path = "php/";
 let caseNumArr = [];
 let cityArr = [];
@@ -131,7 +137,6 @@ function rgbToHex(r, g, b) {
 
 function renderSVGColor() {
   for (let i = 1; i < 22; i++) {
-    const cName = $("#TW_" + i + " > th").text();
     const cNum = parseInt($("#TW_" + i + " > td").text(), 10) * 5;
     let r = 255;
     let g = 255 - cNum;
@@ -147,33 +152,36 @@ function renderSVGColor() {
     $("#tw-map-" + i).css({
       "fill": hexColor,
     });
-    // console.log(cName, cNum);
   }
 }
 
+/**
+ * Accumulate the case number of each city.
+ * @param {Object} cityCaseArr, the number of each case and the city 
+ *   where they lived
+ * TODO: need change #TW_1 value from 1 to 0
+ */
 function countCityCase(cityCaseArr) {
-  let prevCityCode = 1;
-  for (const i in cityCaseArr) {
-
-    const currCityCode = cityCaseArr[i].caseCityCode;
-    // console.log(currCityCode);
-    if (prevCityCode != currCityCode) {
-      // console.log(currCityCode, prevCityCode);
-      prevCityCode = currCityCode;
-      const currCaseCityNum = cityCaseArr[i].caseCityNum;
-      $("#TW_" + currCityCode + " > td").html("<span class='text-warning'>" + currCaseCityNum + "</span>");
-    } else if (prevCityCode == currCityCode) {
-      // console.log("pc:" + currCityCode, prevCityCode);
-      const prevCaseCityNum = parseInt($("#TW_" + prevCityCode + " > td").text(), 10);
-      const currCaseCityNum = parseInt(cityCaseArr[i].caseCityNum, 10);;
-      NewCaseCityNum = prevCaseCityNum + currCaseCityNum;
-      $("#TW_" + prevCityCode + " > td").html("<span class='text-warning'>" + NewCaseCityNum + "</span>");
+  // * count confirmed case number of each city
+  // * the key/property of the `cityCaseCount` is the cityCode in the 
+  //   `taiwan-city-code.json`
+  const cityCaseCount = {};
+  cityCaseArr.forEach((city) => {
+    const {caseCityCode, caseCityNum} = city;
+    const caseCityCodeString = caseCityCode.toString();
+    if(caseCityCodeString in cityCaseCount) {
+      cityCaseCount[caseCityCodeString] += caseCityNum;
+    } else {
+      cityCaseCount[caseCityCodeString] = caseCityNum;
     }
-  }
-  const TW_1_Num = parseInt($("#TW_1 > td").text(), 10) - 1;
-  $("#TW_1 > td").html("<span class='text-warning'>" + TW_1_Num + "</span>");
-  // console.log(TW_1_Num);
+  });
+  
+  
 
+  // update the number in each city in the table
+  Object.keys(cityCaseCount).forEach((key) => {
+    $("#TW_" + key + " > td").html("<span class='text-warning'>" + cityCaseCount[key] + "</span>");
+  });
 }
 
 function nCovDataTable() {
@@ -241,5 +249,6 @@ export {
   nConVList, 
   findCityCode,
   getTWData,
-  renderData
+  renderData,
+  countCityCase
 };

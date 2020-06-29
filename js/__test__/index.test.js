@@ -2,7 +2,8 @@ import {
   nConVList, 
   findCityCode,
   getTWData,
-  renderData
+  renderData,
+  countCityCase
 } from '../index';
 
 import $ from 'jquery';
@@ -10,6 +11,40 @@ import axios from 'axios';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
+
+describe('test `countCityCase`', () => {
+  it('should render correct number case of each city', () => {
+    const cityCaseArrayTest = [
+      {
+        caseCityCode: 1,
+        caseCityName: "基隆市",
+        caseCityNum: 3
+      },
+      {
+        caseCityCode: 15,
+        caseCityName: "高雄市",
+        caseCityNum: 2
+      },
+      {
+        caseCityCode: 1,
+        caseCityName: "基隆市",
+        caseCityNum: 1
+      }
+    ];
+    const htmlString = 
+      '<div><table><tbody>' +
+      '<tr id="TW_1"><th scope="row">基隆市</th><td>1</td>' +
+      '</tr><tr id="TW_15"><th scope="row">高雄市</th><td>0</td></tr>' +
+      '</tbody></table></div>';
+    
+    document.body.innerHTML = htmlString;
+
+    countCityCase(cityCaseArrayTest);
+    expect(document.querySelector('#TW_1 > td').textContent).toBe('4');
+    expect(document.querySelector('#TW_15 > td').textContent).toBe('2');
+
+  });
+});
 
 describe('test `renderData`', () => {
   it('should render corresponding html', () =>{
