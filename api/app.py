@@ -1,11 +1,11 @@
 from flask import Flask
 from get_cases import confirm_data, tw_data
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../dist', static_url_path='/')
 
 @app.route('/')
 def hello():
-    return 'Hello, World!'
+    return app.send_static_file('index.html')
 
 @app.route('/date/<month>-<day>', methods=['GET'])
 def date_count(month, day):

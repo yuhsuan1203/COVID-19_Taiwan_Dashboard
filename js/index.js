@@ -19,41 +19,22 @@ import sideBarRender from './sideBarRender';
  *   total case number.
  * 
  */
-let path = "php/";
+let path = "http://localhost:5000/";
 let caseNumArr = [];
 let cityArr = [];
 let arrayCode = [];
 let cityCaseArr = [];
 
 async function getTWData() {
-  const url = path + "api-TWData.php";
+  const url = path + "/TWData";
 
   try {
     //TODO: check if axios return JSON object automatically
-    const data = await axios.get(url, {
+    const {data} = await axios.get(url, {
       //config
       timeout: 1000
     });
-
-    const diagnoseNum = data[0].確診;
-    const releaseNum = data[0].解除隔離;
-    const deadNum = data[0].死亡;
-    const inspectNum = data[0].送驗;
-    const excludeNum = data[0]['排除(新)'];
-    const ysdDiagnoseNum = data[0].昨日確診;
-    const ysdInspectionNum = data[0].昨日送驗;
-    const ysdExcludeNum = data[0].昨日排除;
-
-    return {
-      diagnoseNum,
-      releaseNum,
-      deadNum,
-      inspectNum,
-      excludeNum,
-      ysdDiagnoseNum,
-      ysdInspectionNum,
-      ysdExcludeNum
-    };
+    return data;
   } catch (err) {
     console.error(err.response.status);
     $(".loading").css({
@@ -75,6 +56,7 @@ function renderData(TWObjData) {
       ysdInspectionNum,
       ysdExcludeNum
     } = TWObjData;
+    console.log(TWObjData);
   
     document.querySelector("#ysdExcludeNum").textContent = ysdExcludeNum;
     document.querySelector("#ysdInspectionNum").textContent = ysdInspectionNum;
