@@ -1,13 +1,18 @@
 import $ from 'jquery';
 import dt from'datatables.net';
-import 'datatables.net-dt/css/jquery.datatables.css';
+//import 'datatables.net-dt/css/jquery.datatables.css';
+//import "bootstrap";
 import twCityCode from '../json/taiwan-city-code.json';
 import axios from 'axios';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 
-dt(window, $); // used for datatables
+import sideBarRender from './sideBarRender';
+
+
+//dt(window, $); // used for datatables
+
 /**
  * Arr: array
  * caseNumArr: contain all the case number in the nCovList, sum it up will get 
@@ -23,112 +28,140 @@ let cityCaseArr = [];
 async function getTWData() {
   const url = path + "api-TWData.php";
 
-  //TODO: check if axios return JSON object automatically
-  const data = await axios.get(url);
+  try {
+    //TODO: check if axios return JSON object automatically
+    const data = await axios.get(url, {
+      //config
+      timeout: 1000
+    });
 
-  const diagnoseNum = data[0].確診;
-  const releaseNum = data[0].解除隔離;
-  const deadNum = data[0].死亡;
-  const inspectNum = data[0].送驗;
-  const excludeNum = data[0]['排除(新)'];
-  const ysdDiagnoseNum = data[0].昨日確診;
-  const ysdInspectionNum = data[0].昨日送驗;
-  const ysdExcludeNum = data[0].昨日排除;
+    const diagnoseNum = data[0].確診;
+    const releaseNum = data[0].解除隔離;
+    const deadNum = data[0].死亡;
+    const inspectNum = data[0].送驗;
+    const excludeNum = data[0]['排除(新)'];
+    const ysdDiagnoseNum = data[0].昨日確診;
+    const ysdInspectionNum = data[0].昨日送驗;
+    const ysdExcludeNum = data[0].昨日排除;
 
-  return {
-    diagnoseNum,
-    releaseNum,
-    deadNum,
-    inspectNum,
-    excludeNum,
-    ysdDiagnoseNum,
-    ysdInspectionNum,
-    ysdExcludeNum
-  };
+    return {
+      diagnoseNum,
+      releaseNum,
+      deadNum,
+      inspectNum,
+      excludeNum,
+      ysdDiagnoseNum,
+      ysdInspectionNum,
+      ysdExcludeNum
+    };
+  } catch (err) {
+    console.error(err.response.status);
+    $(".loading").css({
+      "display": "none"
+    });
+  }
+  
 }
 
 function renderData(TWObjData) {
-  const {
-    diagnoseNum,
-    releaseNum,
-    deadNum,
-    inspectNum,
-    excludeNum,
-    ysdDiagnoseNum,
-    ysdInspectionNum,
-    ysdExcludeNum
-  } = TWObjData;
-
-  document.querySelector("#ysdExcludeNum").textContent = ysdExcludeNum;
-  document.querySelector("#ysdInspectionNum").textContent = ysdInspectionNum;
-  document.querySelector("#excludeNum").textContent = excludeNum;
-  document.querySelector("#inspectNum").textContent = inspectNum;
-  document.querySelector("#releaseNum").textContent = releaseNum;
-  document.querySelector("#ysdDiagnoseNum").textContent = ysdDiagnoseNum;
-  document.querySelector("#deadNum").textContent = deadNum;
-  document.querySelector("#diagnoseNum").textContent = diagnoseNum;
+  try {
+    const {
+      diagnoseNum,
+      releaseNum,
+      deadNum,
+      inspectNum,
+      excludeNum,
+      ysdDiagnoseNum,
+      ysdInspectionNum,
+      ysdExcludeNum
+    } = TWObjData;
+  
+    document.querySelector("#ysdExcludeNum").textContent = ysdExcludeNum;
+    document.querySelector("#ysdInspectionNum").textContent = ysdInspectionNum;
+    document.querySelector("#excludeNum").textContent = excludeNum;
+    document.querySelector("#inspectNum").textContent = inspectNum;
+    document.querySelector("#releaseNum").textContent = releaseNum;
+    document.querySelector("#ysdDiagnoseNum").textContent = ysdDiagnoseNum;
+    document.querySelector("#deadNum").textContent = deadNum;
+    document.querySelector("#diagnoseNum").textContent = diagnoseNum;
+  } catch(err){
+    console.error(err);
+  }
+  
 }
 
 async function render() {
   const TWObjData = await getTWData();
-  renderData(TWObjData);
   
+  renderData(TWObjData);
   nConVList();
 }
 
 async function nConVList() {
-  const url = path + "api-nConVList.php";
+  //const url = path + "api-nConVList.php";
+  const url='https://covid19dashboard.cdc.gov.tw/dash3';
 
-  const data = await axios.get(url);
-
-  data.forEach((v, i) => {
-    // console.log(v);
-    const caseSex = v.性別;
-    const isOutCase = v.是否為境外移入;
-    const caseMonth = v.診斷月份;
-    const caseCity = v.縣市;
-    const caseAge = v.年齡層;
-    const caseNum = v.確定病例數;
-    
-    const caseCityNum = parseInt(caseNum, 10);
-    caseNumArr.push(caseCityNum);
-    cityArr.push(caseCity);
-
-    const caseDisplaySex = (caseSex === "F") ? "女" : "男";
-    
-    const iconClassName = 
-      (isOutCase == "是") ? "far fa-circle text-success" : "fas fa-times text-danger";
-    
-    const isOutCaseIcon = `<i class="${iconClassName}"></i>`
-    
-    const caseCityObj = findCityCode(caseCity);
-    const {
-      cityCode: caseCityCode,
-      cityName: caseCityName
-    } = caseCityObj;
-    
-    let cityCaseObj = {
-      caseCityCode,
-      caseCityName,
-      caseCityNum
-    };
-    cityCaseArr.push(cityCaseObj);
-
-    $("#nConVList").append(
-      '<tr><td>' + caseMonth + '</td><td data-order="' + caseCityCode + '">' + caseCity +
-      '</td><td>' + caseDisplaySex + '</td><td>' +
-      caseAge + '</td><td>' + caseNum + '</td><td>' + isOutCaseIcon + '</td></tr>');
-  });
-  // complete
-  cityCaseArr.sort((a, b) => {
-    return a.caseCityCode - b.caseCityCode;
-  });
-  countCityCase(cityCaseArr);
-  nCovDataTable();
-  renderSVGColor();
-  $(".loading").css({
-    "display": "none"
-  });
+  try {
+    const data = await axios.get(url, {
+      //config
+      timeout: 1000
+    });
+  
+    data.forEach((v, i) => {
+      // console.log(v);
+      const caseSex = v.性別;
+      const isOutCase = v.是否為境外移入;
+      const caseMonth = v.診斷月份;
+      const caseCity = v.縣市;
+      const caseAge = v.年齡層;
+      const caseNum = v.確定病例數;
+      
+      const caseCityNum = parseInt(caseNum, 10);
+      caseNumArr.push(caseCityNum);
+      cityArr.push(caseCity);
+  
+      const caseDisplaySex = (caseSex === "F") ? "女" : "男";
+      
+      const iconClassName = 
+        (isOutCase == "是") ? "far fa-circle text-success" : "fas fa-times text-danger";
+      
+      const isOutCaseIcon = `<i class="${iconClassName}"></i>`
+      
+      const caseCityObj = findCityCode(caseCity);
+      const {
+        cityCode: caseCityCode,
+        cityName: caseCityName
+      } = caseCityObj;
+      
+      let cityCaseObj = {
+        caseCityCode,
+        caseCityName,
+        caseCityNum
+      };
+      cityCaseArr.push(cityCaseObj);
+  
+      $("#nConVList").append(
+        '<tr><td>' + caseMonth + '</td><td data-order="' + caseCityCode + '">' + caseCity +
+        '</td><td>' + caseDisplaySex + '</td><td>' +
+        caseAge + '</td><td>' + caseNum + '</td><td>' + isOutCaseIcon + '</td></tr>');
+    });
+    // complete
+    cityCaseArr.sort((a, b) => {
+      return a.caseCityCode - b.caseCityCode;
+    });
+    countCityCase(cityCaseArr);
+    nCovDataTable();
+    renderSVGColor();
+    $(".loading").css({
+      "display": "none"
+    });
+  } catch (err) {
+    console.error(err);
+    $(".loading").css({
+      "display": "none"
+    });
+  }
+  
 }
 
 function rgbToHex(r, g, b) {
@@ -176,8 +209,6 @@ function countCityCase(cityCaseArr) {
     }
   });
   
-  
-
   // update the number in each city in the table
   Object.keys(cityCaseCount).forEach((key) => {
     $("#TW_" + key + " > td").html("<span class='text-warning'>" + cityCaseCount[key] + "</span>");
@@ -242,7 +273,8 @@ function findCityCode(queryCityName) {
 
 
 // comment for testing
-render();
+render().then(() => console.log('success'));
+sideBarRender().then(() => console.log('success: sidebar'));
 
 // for software tesing hw3
 export { 

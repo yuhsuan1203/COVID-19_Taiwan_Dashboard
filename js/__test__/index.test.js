@@ -8,6 +8,7 @@ import {
 
 import $ from 'jquery';
 import axios from 'axios';
+import dt from'datatables.net';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -123,16 +124,24 @@ describe('test `getTWData`', () => {
 
 describe('test `findCityCode`', () => {
   it('should return city object', () => {
-    const expectObj = {
+    const expectObjTaipei = {
       'cityCode': 2,
       'cityName': '台北市'
     };
+    const expectObjHsinchu = {
+      'cityCode': 5,
+      'cityName': '新竹市'
+    }
 
-    expect(findCityCode('台北市')).toEqual(expectObj);
+    expect(findCityCode('台北市')).toEqual(expectObjTaipei);
+    expect(findCityCode('新竹市')).toEqual(expectObjHsinchu);
   });
 });
 
 describe('logic coverage in `nConVList`, include PC, CC, CACC', () => {
+  beforeEach(() => {
+    dt(window, $);
+  });
   it('sex === "F"(T), isOutCase == "是"(T)', async () => {
     axios.get = jest.fn().mockResolvedValue([{
       "診斷月份": 3, "縣市": "高雄市", "性別": "F", 

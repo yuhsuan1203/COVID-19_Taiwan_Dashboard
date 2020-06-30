@@ -25,7 +25,6 @@
   <link rel="apple-touch-icon" sizes="180x180" href="https://covid19.tzeng17.com/img/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="https://covid19.tzeng17.com/img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="https://covid19.tzeng17.com/img/favicon-16x16.png">
-  <link rel="manifest" href="https://covid19.tzeng17.com/img/site.webmanifest">
   <title>武漢肺炎疫情-台灣情報站</title>
   <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
@@ -522,51 +521,9 @@
     <!-- page content ends -->
   </div>
   <!--page body ends -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script src="js/layout/core.js"></script>
   <script src="js/layout/template.js"></script>
   <!-- <script src="js/layout/dashboard.js"></script> -->
-  <script src="js/popper.min.js"></script>
-  <script src="js/bootstrap.js"></script>
-  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js">
-  </script>
-  <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js"></script>
-  <script src="js/index.js"></script>
-  <script type="text/javascript">
-  $(function() {
-    $('#sideBar').load('sidebar.html');
-    // $("#TW-case-map").load('img/tw-2.svg');
-    $(".st1").on('mousemove', function(e) {
-      // console.log(offsetX, offsetY);
-      e.preventDefault();
-      offsetX = e.offsetX;
-      offsetY = e.offsetY;
-      $(".tooltip-box").css({
-        "left": offsetX - 10 + "px",
-        "top": offsetY + 20 + "px"
-      });
-    });
-    $(".st1").hover(function() {
-      cityID = $(this).attr("id").replace("tw-map-", "");
-      cName = $("#TW_" + cityID + " > th").text();
-      cNum = $("#TW_" + cityID + " > td").text();
-      // $("#tw-map-" + cityID).css({
-      //   "stroke": "#000",
-      // });
-      $(".tooltip-box").css({
-        "display": "initial",
-      }).html('<span id="city-name">' + cName + '</span>：<span id="city-case-num">' + cNum + '</span>例');
-    }, function() {
-      // $("#tw-map-" + cityID).css({
-      //   "stroke": "#5F9EA0",
-      // });
-      $(".tooltip-box").css({
-        display: "none",
-      });
-    });
-  });
-  </script>
 
 </body>
 
