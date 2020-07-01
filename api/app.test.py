@@ -23,7 +23,7 @@ class BasicTestCase(unittest.TestCase):
     def test_TWData(self):
         tester = app.test_client(self)
         response = tester.get('/TWData')
-        data = json.loads(response.data)
+        data = json.loads(response.data.decode())
         self.assertNotEqual(data['diagnoseNum'], -1)
         self.assertNotEqual(data['releaseNum'], -1)
         self.assertNotEqual(data['deadNum'], -1)
@@ -35,7 +35,21 @@ class BasicTestCase(unittest.TestCase):
         self.assertTrue(isinstance(data['inspectNum'], str))
         self.assertTrue(isinstance(data['excludeNum'], str))
 
-
+    def test_nCovList(self):
+        tester = app.test_client(self)
+        response = tester.get('/nCovList')
+        data = json.loads(response.data.decode())
+        self.assertTrue(isinstance(data, list))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(len(data) > 0)
+        self.assertIn('性別', data[0])
+        self.assertIn('確定病名', data[0])
+        self.assertIn('是否為境外移入', data[0])
+        self.assertIn('年齡層', data[0])
+        self.assertIn('縣市', data[0])
+        self.assertIn('確定病例數', data[0])
+        self.assertIn('診斷月份', data[0])
+        
 
 if __name__ == '__main__':
     unittest.main()
