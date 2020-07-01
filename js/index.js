@@ -19,14 +19,12 @@ import sideBarRender from './sideBarRender';
  *   total case number.
  * 
  */
-let path = "http://localhost:5000/";
 let caseNumArr = [];
 let cityArr = [];
-let arrayCode = [];
 let cityCaseArr = [];
 
 async function getTWData() {
-  const url = path + "/TWData";
+  const url = "/TWData";
 
   try {
     //TODO: check if axios return JSON object automatically
@@ -79,7 +77,7 @@ async function render() {
 }
 
 async function nConVList() {
-  const url = path + "nCovList";
+  const url = "nCovList";
 
   try {
     const {data} = await axios.get(url, {
