@@ -36,7 +36,7 @@ async function getTWData() {
     });
     return data;
   } catch (err) {
-    console.error(err.response.status);
+    console.error(err);
     $(".loading").css({
       "display": "none"
     });
@@ -56,7 +56,6 @@ function renderData(TWObjData) {
       ysdInspectionNum,
       ysdExcludeNum
     } = TWObjData;
-    console.log(TWObjData);
   
     document.querySelector("#ysdExcludeNum").textContent = ysdExcludeNum;
     document.querySelector("#ysdInspectionNum").textContent = ysdInspectionNum;

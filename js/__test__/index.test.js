@@ -92,21 +92,36 @@ describe('test `renderData`', () => {
 });
 
 describe('test `getTWData`', () => {
-  it('should return TWObjData', async () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
+  it('should return TWObjData, with mock', async () => {
     axios.get = jest
       .fn()
-      .mockResolvedValue({
-        "0": {
-          確診: 447,
-          解除隔離: 435,
-          死亡: 7,
-          送驗: "76,209",
-          "排除(新)": "75,264",
-          昨日確診: 0,
-          昨日排除: 147,
-          昨日送驗: 177,
-        },
-      });
+      .mockResolvedValueOnce({data: {
+        deadNum: 7,
+        diagnoseNum: 447,
+        excludeNum: "75,706",
+        inspectNum: "76,676",
+        releaseNum: 437,
+        ysdDiagnoseNum: 0,
+        ysdExcludeNum: 124,
+        ysdInspectionNum: 185,
+      }});
+
+    const TWObjData = await getTWData();
+    expect(TWObjData).toMatchObject({
+      diagnoseNum: expect.any(Number),
+      releaseNum: expect.any(Number),
+      deadNum: expect.any(Number),
+      inspectNum: expect.any(String),
+      excludeNum: expect.any(String),
+      ysdDiagnoseNum: expect.any(Number),
+      ysdInspectionNum: expect.any(Number),
+      ysdExcludeNum: expect.any(Number)
+    })
+  });
+  it.skip('should return TWObjData with real connection', async () => {
 
     const TWObjData = await getTWData();
     expect(TWObjData).toMatchObject({
