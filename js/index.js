@@ -28,10 +28,7 @@ async function getTWData() {
 
   try {
     //TODO: check if axios return JSON object automatically
-    const {data} = await axios.get(url, {
-      //config
-      timeout: 1000
-    });
+    const {data} = await axios.get(url);
     return data;
   } catch (err) {
     console.error(err);
@@ -80,10 +77,7 @@ async function nConVList() {
   const url = "nCovList";
 
   try {
-    const {data} = await axios.get(url, {
-      //config
-      timeout: 1000
-    });
+    const {data} = await axios.get(url);
   
     data.forEach((v, i) => {
       // console.log(v);
