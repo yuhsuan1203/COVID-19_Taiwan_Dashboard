@@ -158,10 +158,10 @@ describe('logic coverage in `nConVList`, include PC, CC, CACC', () => {
     dt(window, $);
   });
   it('sex === "F"(T), isOutCase == "是"(T)', async () => {
-    axios.get = jest.fn().mockResolvedValue([{
+    axios.get = jest.fn().mockResolvedValue({data: [{
       "診斷月份": 3, "縣市": "高雄市", "性別": "F", 
       "是否為境外移入": "是", "年齡層": "50-54", "確定病例數": 3 
-    }])
+    }]})
     // Set up our document body
     document.body.innerHTML = '<div id="nConVList"></div>';
     
@@ -175,10 +175,10 @@ describe('logic coverage in `nConVList`, include PC, CC, CACC', () => {
   });
 
   it('sex === "F"(F), isOutCase == "是"(F)', async () => {
-    axios.get = jest.fn().mockResolvedValue([{
+    axios.get = jest.fn().mockResolvedValue({data: [{
       "診斷月份": 4, "縣市": "新北市", "性別": "M", 
       "是否為境外移入": "否", "年齡層": "35-39", "確定病例數": 1 
-    }])
+    }]})
 
     // Set up our document body
     document.body.innerHTML = '<div id="nConVList"></div>';
