@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from get_cases import confirm_data, tw_data
+from get_cases import get_cdc_confim_data, get_cdc_tw_data
 
 app = Flask(__name__, static_folder='../dist', static_url_path='/')
 
@@ -27,6 +27,7 @@ def hello():
 @app.route('/TWData')
 def get_tw_data():
     data = dict()
+    tw_data = get_cdc_tw_data()
     data['diagnoseNum'] = -1
     data['releaseNum'] = -1
     data['deadNum'] = -1
@@ -50,6 +51,7 @@ def get_tw_data():
 @app.route('/nCovList')
 def get_list():
     data = list()
+    confirm_data = get_cdc_confim_data()
 
     for single_item in confirm_data:
         single_case = dict()
