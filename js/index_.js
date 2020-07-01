@@ -429,25 +429,6 @@ $("#tw-city-list tr").hover(function () {
     "fill": "#fff",
   });
 });
-// $("svg").find("path").hover(function () {
-//   // over
-//   console.log($(this).attr("id"));
-//   cityID = $(this).attr("id");
-
-//   $("#TW-case-map").mousemove(function (e) {
-//     // values: e.clientX, e.clientY, e.pageX, e.pageY
-//     var x = e.pageX;
-//     var y = e.pageY;
-//     // $("#cityInfo").text(cityID + ' x:' + px + ' y:' + py);
-//     $(".toolbox").css({
-//       "top": y + "px",
-//       "left": x + "px"
-//     });
-//   });
-//   // $('#' + cityID + '').tooltip();
-// }, function () {
-//   console.log("end");
-// });
 
 
 function nCovDataTable() {

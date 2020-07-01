@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import dt from'datatables.net';
-//import 'datatables.net-dt/css/jquery.datatables.css';
-//import "bootstrap";
+import 'datatables.net-dt/css/jquery.datatables.css';
+import "bootstrap";
 import twCityCode from '../json/taiwan-city-code.json';
 import axios from 'axios';
 
@@ -79,11 +79,10 @@ async function render() {
 }
 
 async function nConVList() {
-  //const url = path + "api-nConVList.php";
-  const url='https://covid19dashboard.cdc.gov.tw/dash3';
+  const url = path + "nCovList";
 
   try {
-    const data = await axios.get(url, {
+    const {data} = await axios.get(url, {
       //config
       timeout: 1000
     });

@@ -6,17 +6,17 @@ async function sideBarRender() {
   $(".st1").on('mousemove', function(e) {
     // console.log(offsetX, offsetY);
     e.preventDefault();
-    offsetX = e.offsetX;
-    offsetY = e.offsetY;
+    const offsetX = e.offsetX;
+    const offsetY = e.offsetY;
     $(".tooltip-box").css({
       "left": offsetX - 10 + "px",
       "top": offsetY + 20 + "px"
     });
   });
   $(".st1").hover(function() {
-    cityID = $(this).attr("id").replace("tw-map-", "");
-    cName = $("#TW_" + cityID + " > th").text();
-    cNum = $("#TW_" + cityID + " > td").text();
+    const cityID = $(this).attr("id").replace("tw-map-", "");
+    const cName = $("#TW_" + cityID + " > th").text();
+    const cNum = $("#TW_" + cityID + " > td").text();
     // $("#tw-map-" + cityID).css({
     //   "stroke": "#000",
     // });
